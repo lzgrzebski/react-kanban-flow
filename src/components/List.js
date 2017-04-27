@@ -18,7 +18,6 @@ const List = (props) => {
 
   return (
     <ListWrapper
-      draggable="true"
       width={width}
       onDragOver={handleOverEmptyList}
       onDragEnd={props.handleDragEnd}
