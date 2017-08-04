@@ -5,13 +5,20 @@
   "private": true,
   "dependencies": {
     "axios": "^0.16.1",
+    "eslint-config-airbnb": "^15.1.0",
+    "prop-types": "^15.5.10",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "simple-react-dnd": "^0.2.2",
     "styled-components": "^1.4.5"
   },
   "devDependencies": {
-    "gh-pages": "^0.12.0",
-    "react-scripts": "0.9.5"
+    "eslint-config-airbnb-base": "^11.3.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.1.0",
+    "gh-pages": "^1.0.0",
+    "react-scripts": "^1.0.10"
   },
   "scripts": {
     "start": "react-scripts start",

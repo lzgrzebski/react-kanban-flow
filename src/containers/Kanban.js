@@ -1,19 +1,9 @@
-import React, { Component, PropTypes } from 'react';
-import styled, { injectGlobal } from 'styled-components';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { DragAndDrop } from 'simple-react-dnd';
 
+import Wrapper from '../components/Wrapper';
 import List from '../components/List';
-
-// eslint-disable-next-line no-unused-expressions
-injectGlobal`
-  body {
-    margin:0;
-    background:#fafafa;
-  }
-`;
-
-const Wrapper = styled.section`
-  display:flex;
-`;
 
 class Kanban extends Component {
   static removeItem(array, element) {
@@ -30,35 +20,21 @@ class Kanban extends Component {
     return list.map(listElement => this.state.elements[listElement]);
   }
 
-  handleDragStart = (id, listId, e) => {
+  handleDragStart = (id, listId) => {
     this.setState({
       draggedElementId: id,
       draggedListId: listId,
     });
-
-    if (e.dataTransfer !== undefined) {
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.dropEffect = 'move';
-      e.dataTransfer.setData('text', id); // firefox fix
-    }
   }
-  handleDragEnd = (e) => {
-    e.preventDefault();
+  handleDragEnd = () => {
     this.setState({
       draggedElementId: null,
       draggedListId: null,
     });
   }
 
-  handleDragOver = (id, listId, e) => {
-    e.preventDefault();
+  handleDragOver = (id, listId, showAfter) => {
     if (this.state.draggedElementId === id) return;
-
-    const overElementHeight = e.currentTarget.getBoundingClientRect().height / 2;
-    const overElementTopOffset = e.currentTarget.getBoundingClientRect().top;
-    const mousePositionY = e.clientY;
-
-    const showAfter = mousePositionY - overElementTopOffset > overElementHeight;
 
     const draggedListId = this.state.draggedListId;
     const draggedElementId = this.state.draggedElementId;
@@ -76,8 +52,7 @@ class Kanban extends Component {
     });
   }
 
-  handleOverEmptyList = (listId, e) => {
-    e.preventDefault();
+  handleOverEmptyList = (listId) => {
     if (this.state.lists[listId].length > 0) return;
 
     const lists = Object.assign({}, this.state.lists);
@@ -125,4 +100,4 @@ Kanban.propTypes = {
   }).isRequired,
 };
 
-export default Kanban;
+export default DragAndDrop(Kanban);

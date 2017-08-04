@@ -1,27 +1,17 @@
-import React, { PropTypes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Drop } from 'simple-react-dnd';
 
+import ListWrapper from './ListWrapper';
 import Item from './Item';
 
-const ListWrapper = styled.div`
-  width: ${props => props.width};
-  height: 100vh;
-`;
-
 const List = (props) => {
-  const { nrOfColumns, items, listId } = props;
+  const { nrOfColumns, items } = props;
   const width = `${100 / nrOfColumns}%`;
-
-  const handleOverEmptyList = (e) => {
-    props.handleOverEmptyList(listId, e);
-  };
 
   return (
     <ListWrapper
       width={width}
-      onDragOver={handleOverEmptyList}
-      onDragEnd={props.handleDragEnd}
-      onDrop={props.handleDragEnd}
     >
       {
         items.map(item => (
@@ -35,8 +25,10 @@ const List = (props) => {
 List.propTypes = {
   nrOfColumns: PropTypes.number.isRequired,
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
-  listId: PropTypes.string.isRequired,
-  handleDragEnd: PropTypes.func.isRequired,
 };
 
-export default List;
+export default Drop({
+  onDragOver: props => props.handleOverEmptyList(props.listId),
+  onDragEnd: props => props.handleDragEnd(),
+  onDrop: props => props.handleDragEnd(),
+})(List);

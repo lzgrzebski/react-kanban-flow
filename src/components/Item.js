@@ -1,49 +1,19 @@
-import React, { PropTypes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Drag, Drop } from 'simple-react-dnd';
 
-const Element = styled.div`
-  background-color: #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,.04);
-  border: 1px solid rgba(0,0,0,.09);
-  border-radius: 3px;
-  margin:10px;
-  font-family: 'Montserrat', sans-serif;
-  font-size:1.4em;
-  word-wrap: break-word;
-  color:#555;
-  line-height:1.58;
-  padding: 15px;
-  border-top: 4px solid ${prop => prop.color};
-  opacity: ${prop => (prop.draggedElementId === prop.id ? '0.5' : '1')};
-  filter: ${prop => (prop.draggedElementId === prop.id ? 'grayscale(1)' : 'grayscale(0)')};
-  transition: all 0.3s;
-`;
+import Element from './Element';
 
-const Item = (props) => {
-  const handleDragStart = (e) => {
-    props.handleDragStart(props.id, props.listId, e);
-  };
-
-  const handleDragOver = (e) => {
-    props.handleDragOver(props.id, props.listId, e);
-  };
-
-  return (
-    <Element
-      id={props.id}
-      listId={props.listId}
-      color={props.color}
-      draggedElementId={props.draggedElementId}
-      draggable="true"
-      onDragStart={handleDragStart}
-      onDragEnd={props.handleDragEnd}
-      onDrop={props.handleDragEnd}
-      onDragOver={handleDragOver}
-    >
-      {props.title}
-    </Element>
-  );
-};
+const Item = props => (
+  <Element
+    id={props.id}
+    listId={props.listId}
+    color={props.color}
+    draggedElementId={props.draggedElementId}
+  >
+    {props.title}
+  </Element>
+);
 
 Item.propTypes = {
   id: PropTypes.number.isRequired,
@@ -51,12 +21,18 @@ Item.propTypes = {
   title: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,
   draggedElementId: PropTypes.number,
-  handleDragOver: PropTypes.func.isRequired,
-  handleDragEnd: PropTypes.func.isRequired,
 };
 
 Item.defaultProps = {
   draggedElementId: '',
 };
 
-export default Item;
+export default Drop({
+  onDrop: props => props.handleDragEnd(),
+  onDragOver: (props, showAfter) => props.handleDragOver(props.id, props.listId, showAfter),
+})(Drag({
+  onDrop: props => props.handleDragEnd(),
+  onDragOver: (props, showAfter) => props.handleDragOver(props.id, props.listId, showAfter),
+  onDragStart: props => props.handleDragStart(props.id, props.listId),
+  onDragEnd: props => props.handleDragEnd(),
+})(Item));
